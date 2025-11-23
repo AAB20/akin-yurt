@@ -117,120 +117,103 @@ def get_text(key):
 def apply_custom_css():
     is_dark = st.session_state.theme == "Dark"
     
-    # Palette: Ultra-Premium Monochrome with subtle accent
-    # Light: Clean white, off-white, dark grey text, absolute black headings
-    # Dark: Deep matte black, charcoal greys, white text
-    
+    # تحديد الألوان بدقة: أسود كامل للفاتح، أبيض كامل للداكن
     if is_dark:
         bg_color = "#000000"
-        sec_bg_color = "#111111" # Sidebar
-        text_color = "#FFFFFF"
-        sub_text_color = "#888888"
-        accent_color = "#FFFFFF" # Minimalist accent
+        sec_bg_color = "#111111"
+        text_color = "#FFFFFF"      # أبيض نقي
+        sub_text_color = "#DDDDDD"  # أبيض مائل للرمادي قليلاً للتمييز
         border_color = "#333333"
         input_bg = "#1A1A1A"
         card_bg = "#111111"
         button_bg = "#FFFFFF"
-        button_text = "#000000"
-        shadow = "0 4px 20px rgba(0,0,0,0.5)"
+        button_text = "#000000"     # نص الزر عكس الخلفية
         user_msg_bg = "#1A1A1A"
+        shadow = "0 4px 20px rgba(0,0,0,0.5)"
     else:
         bg_color = "#FFFFFF"
-        sec_bg_color = "#FAFAFA" # Sidebar
-        text_color = "#111111"
-        sub_text_color = "#666666"
-        accent_color = "#000000"
+        sec_bg_color = "#FAFAFA"
+        text_color = "#000000"      # أسود نقي
+        sub_text_color = "#333333"  # رمادي غامق جداً للتمييز
         border_color = "#EAEAEA"
         input_bg = "#FFFFFF"
         card_bg = "#FFFFFF"
         button_bg = "#000000"
-        button_text = "#FFFFFF"
-        shadow = "0 10px 40px rgba(0,0,0,0.04)"
+        button_text = "#FFFFFF"     # نص الزر عكس الخلفية
         user_msg_bg = "#FAFAFA"
+        shadow = "0 10px 40px rgba(0,0,0,0.04)"
 
     st.markdown(f"""
         <style>
-        /* استيراد خطوط راقية */
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;700&family=Inter:wght@300;400;600&display=swap');
 
-        /* --- Global Reset & Typography --- */
-        html, body, [class*="css"] {{
+        /* --- Global Typography Enforcement --- */
+        html, body, [class*="css"], .stMarkdown, .stText, p, h1, h2, h3, h4, h5, h6, span, div, label, li {{
             font-family: 'Inter', 'Cairo', sans-serif;
-            color: {text_color};
-            background-color: {bg_color};
+            color: {text_color} !important; /* فرض اللون المختار على جميع النصوص */
             -webkit-font-smoothing: antialiased;
         }}
 
-        /* إخفاء عناصر ستريم ليت الافتراضية */
+        /* Reset Elements */
         #MainMenu {{visibility: hidden;}}
         footer {{visibility: hidden;}}
         header {{visibility: hidden;}}
 
-        /* --- Layout & Containers --- */
+        /* --- Layout & Backgrounds --- */
         .stApp {{
             background-color: {bg_color};
         }}
 
-        /* Sidebar - Ultra Clean */
+        /* Sidebar */
         section[data-testid="stSidebar"] {{
             background-color: {sec_bg_color};
             border-right: 1px solid {border_color};
-            padding-top: 2rem;
         }}
+        
+        /* Sidebar Headers Specific Override */
         section[data-testid="stSidebar"] h3 {{
+            color: {text_color} !important;
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: {sub_text_color};
-            margin-bottom: 1rem;
-            font-weight: 600;
+            opacity: 0.8;
         }}
 
-        /* --- Buttons: The "Apple" Style --- */
+        /* --- Buttons (High Contrast) --- */
         div.stButton > button {{
-            background-color: {button_bg};
-            color: {button_text};
+            background-color: {button_bg} !important;
+            color: {button_text} !important; /* لون نص الزر معاكس للخلفية */
             border: 1px solid {button_bg};
             border-radius: 8px;
             padding: 0.6rem 1.5rem;
             font-weight: 500;
-            font-size: 14px;
-            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            width: 100%;
             box-shadow: none;
+            transition: transform 0.1s;
         }}
         div.stButton > button:hover {{
+            opacity: 0.9;
             transform: scale(0.99);
-            opacity: 0.85;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }}
         div.stButton > button:active {{
             transform: scale(0.97);
         }}
 
-        /* --- Inputs: Minimalist --- */
-        .stTextInput input, .stSelectbox div[data-baseweb="select"] > div, .stChatInputContainer textarea {{
-            background-color: {input_bg};
-            color: {text_color};
-            border: 1px solid {border_color};
+        /* --- Inputs & Text Areas --- */
+        .stTextInput input, 
+        .stSelectbox div[data-baseweb="select"] > div, 
+        .stChatInputContainer textarea {{
+            background-color: {input_bg} !important;
+            color: {text_color} !important;
+            border: 1px solid {border_color} !important;
             border-radius: 8px;
-            padding: 10px;
-            font-size: 14px;
-            box-shadow: none;
-            transition: border-color 0.2s;
         }}
-        .stChatInputContainer textarea:focus {{
-            border-color: {accent_color};
-            box-shadow: 0 0 0 1px {accent_color};
+        
+        /* Dropdown Menu Items */
+        ul[data-baseweb="menu"] li, ul[data-baseweb="menu"] span {{
+            color: {text_color} !important;
         }}
 
-        /* --- Login Card: Central & Elegant --- */
-        .login-container {{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 80vh;
-        }}
+        /* --- Login Card --- */
         .login-card {{
             background-color: {card_bg};
             padding: 3rem 4rem;
@@ -238,76 +221,30 @@ def apply_custom_css():
             border: 1px solid {border_color};
             box-shadow: {shadow};
             text-align: center;
-            max-width: 450px;
-            margin: auto;
-        }}
-        .login-logo {{
-            font-size: 3rem;
-            margin-bottom: 1.5rem;
-            display: inline-block;
-            background: linear-gradient(135deg, {text_color} 0%, {sub_text_color} 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }}
         .login-header {{
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: {text_color};
-            letter-spacing: -0.5px;
+            color: {text_color} !important;
         }}
         .login-sub {{
-            font-size: 1rem;
-            color: {sub_text_color};
-            margin-bottom: 2.5rem;
-            line-height: 1.5;
+            color: {sub_text_color} !important;
         }}
 
-        /* --- Chat Interface: Professional --- */
-        .stChatMessage {{
-            background-color: transparent;
-            border: none;
-            padding: 1rem 0;
-            gap: 1rem;
-        }}
+        /* --- Chat Bubbles --- */
         [data-testid="stChatMessage"][data-testid="user-message"] {{
             background-color: {user_msg_bg};
+            border: 1px solid {border_color};
             border-radius: 12px;
-            padding: 1rem 1.5rem;
-            border: 1px solid {border_color};
-        }}
-        .stMarkdown p {{
-            font-size: 15px;
-            line-height: 1.6;
         }}
         
-        /* Status Container */
-        div[data-testid="stStatusWidget"] {{
-            background-color: {input_bg};
-            border: 1px solid {border_color};
-            border-radius: 8px;
-            color: {sub_text_color};
-        }}
-
-        /* Expander for History */
+        /* Expanders */
         .streamlit-expanderHeader {{
-            background-color: transparent;
-            color: {text_color};
-            font-size: 14px;
-            border: none;
+            color: {text_color} !important;
+            background-color: transparent !important;
         }}
         
-        /* Scrollbar */
-        ::-webkit-scrollbar {{
-            width: 6px;
-            height: 6px;
-        }}
-        ::-webkit-scrollbar-track {{
-            background: transparent;
-        }}
-        ::-webkit-scrollbar-thumb {{
-            background: {border_color};
-            border-radius: 3px;
+        /* Status Widget Text */
+        div[data-testid="stStatusWidget"] div {{
+             color: {text_color} !important;
         }}
         </style>
     """, unsafe_allow_html=True)
@@ -572,7 +509,7 @@ def login_page():
         
         handle_google_login()
         
-        st.markdown(f"<div style='font-size: 12px; color: #888; margin: 20px 0;'>{get_text('or')}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size: 12px; margin: 20px 0;'>{get_text('or')}</div>", unsafe_allow_html=True)
         
         if st.button(get_text("guest_login"), use_container_width=True):
              st.session_state.logged_in = True
@@ -580,7 +517,7 @@ def login_page():
              st.rerun()
              
         st.markdown(f"""
-            <div style='margin-top: 40px; font-size: 11px; color: #aaa; letter-spacing: 0.5px;'>
+            <div style='margin-top: 40px; font-size: 11px; opacity: 0.7; letter-spacing: 0.5px;'>
                 {get_text('rights')}
             </div>
             </div>
@@ -662,7 +599,7 @@ def chat_interface():
     st.markdown(f"""
         <div style='margin-bottom: 3rem;'>
             <h1 style='font-size: 2.5rem; font-weight: 700; letter-spacing: -1px;'>{get_text('welcome_chat')}</h1>
-            <p style='font-size: 1.1rem; color: #888; font-weight: 300;'>{get_text('desc_chat')}</p>
+            <p style='font-size: 1.1rem; opacity: 0.7; font-weight: 300;'>{get_text('desc_chat')}</p>
         </div>
     """, unsafe_allow_html=True)
 
