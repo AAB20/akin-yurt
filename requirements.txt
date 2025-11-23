@@ -1,0 +1,6 @@
+streamlit
+google-generativeai
+pycryptodome
+streamlit-oauth
+supabase
+requests
