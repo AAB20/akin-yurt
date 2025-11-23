@@ -103,7 +103,7 @@ class ChatModel:
         try:
             self.api_key = st.secrets["GEMINI_API_KEY"]
             genai.configure(api_key=self.api_key)
-            self.gemini_model = genai.GenerativeModel("gemini-1.5-flash")
+            self.gemini_model = genai.GenerativeModel("gemini-2.0-flash")
         except Exception:
             self.api_key = None
             st.error("⚠️ لم يتم العثور على GEMINI_API_KEY في ملف secrets.toml")
@@ -302,3 +302,4 @@ if __name__ == "__main__":
         chat_interface()
     else:
         login_page()
+
