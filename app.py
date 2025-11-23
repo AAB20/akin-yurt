@@ -23,192 +23,292 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تهيئة متغيرات الجلسة الجديدة
+# تهيئة متغيرات الجلسة
 if "language" not in st.session_state: st.session_state.language = "AR"
 if "theme" not in st.session_state: st.session_state.theme = "Light"
 if "history_loaded" not in st.session_state: st.session_state.history_loaded = []
 
-# قاموس الترجمة للنصوص الثابتة
+# قاموس الترجمة
 UI_TEXT = {
     "AR": {
         "title": "Akın Yurt AI",
-        "subtitle": "منصتك الذكية للبحث والمعرفة التاريخية",
-        "login_google": "تسجيل الدخول عبر Google",
-        "guest_login": "متابعة كزائر",
-        "or": "— أو —",
-        "welcome_chat": "مرحباً بك في المساعد الذكي 👋",
-        "desc_chat": "اسأل عن التاريخ، الجغرافيا، أو أي معلومة عامة.",
-        "profile": "الملف الشخصي",
-        "settings": "⚙️ الإعدادات",
-        "language": "اللغة / Language",
-        "theme": "المظهر / Theme",
-        "clear_chat": "🗑️ مسح المحادثة الحالية",
-        "logout": "تسجيل الخروج",
-        "history_title": "📜 سجل المحادثات السابقة",
-        "input_placeholder": "اكتب سؤالك هنا...",
-        "status_memory": "🔍 البحث في الأرشيف السحابي...",
-        "status_wiki": "🌐 البحث في المصادر المفتوحة (Wikipedia) + تلخيص ذكي...",
-        "status_found_mem": "تم العثور على الإجابة في الذاكرة!",
-        "status_found_wiki": "تم جلب وتلخيص المعلومات من ويكيبيديا",
-        "status_ai": "تم التوليد بواسطة الذكاء الاصطناعي",
+        "subtitle": "الذكاء المعرفي للمستقبل",
+        "login_google": "المتابعة باستخدام Google",
+        "guest_login": "تجربة كزائر",
+        "or": "أو",
+        "welcome_chat": "مرحباً",
+        "desc_chat": "كيف يمكنني مساعدتك في استكشاف التاريخ اليوم؟",
+        "profile": "الحساب",
+        "settings": "تفضيلات العرض",
+        "language": "اللغة",
+        "theme": "المظهر",
+        "clear_chat": "محو الذاكرة المؤقتة",
+        "logout": "إنهاء الجلسة",
+        "history_title": "الأرشيف",
+        "input_placeholder": "اسأل شيئاً...",
+        "status_memory": "جاري استرجاع البيانات...",
+        "status_wiki": "تحليل المصادر المفتوحة...",
+        "status_found_mem": "تم الاسترجاع من الذاكرة",
+        "status_found_wiki": "تم التوثيق عبر ويكيبيديا",
+        "status_ai": "تمت المعالجة بواسطة AI",
         "source": "المصدر",
-        "rights": "© 2024 Turkmeneli AI Platform. All rights reserved.",
-        "login_error": "فشل تسجيل الدخول، يرجى المحاولة مرة أخرى.",
-        "db_error": "⚠️ تعذر الاتصال بقاعدة البيانات"
+        "rights": "© 2025 Akın Yurt Technologies.",
+        "login_error": "فشل المصادقة.",
+        "db_error": "النظام غير متصل"
     },
     "TR": {
-        "title": "Akın Yurt YZ",
-        "subtitle": "Tarihsel bilgi ve araştırma için akıllı platformunuz",
-        "login_google": "Google ile Giriş Yap",
-        "guest_login": "Misafir olarak devam et",
-        "or": "— veya —",
-        "welcome_chat": "Akıllı Asistana Hoş Geldiniz 👋",
-        "desc_chat": "Tarih, coğrafya veya genel bilgiler hakkında sorun.",
-        "profile": "Profil",
-        "settings": "⚙️ Ayarlar",
-        "language": "Dil / Language",
-        "theme": "Tema / Theme",
-        "clear_chat": "🗑️ Sohbeti Temizle",
-        "logout": "Çıkış Yap",
-        "history_title": "📜 Geçmiş Sohbetler",
-        "input_placeholder": "Sorunuzu buraya yazın...",
-        "status_memory": "🔍 Bulut Arşivinde Aranıyor...",
-        "status_wiki": "🌐 Açık Kaynaklarda Arama (Wikipedia) + Akıllı Özet...",
-        "status_found_mem": "Cevap hafızada bulundu!",
-        "status_found_wiki": "Bilgiler Wikipedia'dan alındı ve özetlendi",
-        "status_ai": "Yapay Zeka tarafından oluşturuldu",
+        "title": "Akın Yurt AI",
+        "subtitle": "Geleceğin Bilişsel Zekası",
+        "login_google": "Google ile Devam Et",
+        "guest_login": "Misafir Girişi",
+        "or": "veya",
+        "welcome_chat": "Merhaba",
+        "desc_chat": "Bugün tarihi keşfetmenize nasıl yardımcı olabilirim?",
+        "profile": "Hesap",
+        "settings": "Tercihler",
+        "language": "Dil",
+        "theme": "Tema",
+        "clear_chat": "Önbelleği Temizle",
+        "logout": "Oturumu Kapat",
+        "history_title": "Arşiv",
+        "input_placeholder": "Bir şeyler sorun...",
+        "status_memory": "Veri alınıyor...",
+        "status_wiki": "Açık kaynak analizi...",
+        "status_found_mem": "Hafızadan alındı",
+        "status_found_wiki": "Wikipedia üzerinden doğrulandı",
+        "status_ai": "YZ tarafından işlendi",
         "source": "Kaynak",
-        "rights": "© 2024 Türkmeneli YZ Platformu. Tüm hakları saklıdır.",
-        "login_error": "Giriş başarısız, lütfen tekrar deneyin.",
-        "db_error": "⚠️ Veritabanına bağlanılamadı"
+        "rights": "© 2025 Akın Yurt Technologies.",
+        "login_error": "Kimlik doğrulama başarısız.",
+        "db_error": "Sistem çevrimdışı"
     },
     "EN": {
         "title": "Akın Yurt AI",
-        "subtitle": "Your intelligent platform for historical research",
-        "login_google": "Login with Google",
-        "guest_login": "Continue as Guest",
-        "or": "— or —",
-        "welcome_chat": "Welcome to AI Assistant 👋",
-        "desc_chat": "Ask about history, geography, or general knowledge.",
-        "profile": "Profile",
-        "settings": "⚙️ Settings",
-        "language": "Language / Dil",
-        "theme": "Theme / Tema",
-        "clear_chat": "🗑️ Clear Chat",
-        "logout": "Logout",
-        "history_title": "📜 Previous Conversations",
-        "input_placeholder": "Type your question here...",
-        "status_memory": "🔍 Searching Cloud Archive...",
-        "status_wiki": "🌐 Searching Open Source (Wikipedia) + Smart Summary...",
-        "status_found_mem": "Answer found in memory!",
-        "status_found_wiki": "Information fetched & summarized from Wikipedia",
-        "status_ai": "Generated by AI",
+        "subtitle": "Cognitive Intelligence for the Future",
+        "login_google": "Continue with Google",
+        "guest_login": "Try as Guest",
+        "or": "or",
+        "welcome_chat": "Hello",
+        "desc_chat": "How can I assist you in exploring history today?",
+        "profile": "Account",
+        "settings": "Preferences",
+        "language": "Language",
+        "theme": "Theme",
+        "clear_chat": "Clear Cache",
+        "logout": "Sign Out",
+        "history_title": "Archive",
+        "input_placeholder": "Ask anything...",
+        "status_memory": "Retrieving data...",
+        "status_wiki": "Analyzing open sources...",
+        "status_found_mem": "Retrieved from memory",
+        "status_found_wiki": "Verified via Wikipedia",
+        "status_ai": "Processed by AI",
         "source": "Source",
-        "rights": "© 2024 Turkmeneli AI Platform. All rights reserved.",
-        "login_error": "Login failed, please try again.",
-        "db_error": "⚠️ Unable to connect to database"
+        "rights": "© 2025 Akın Yurt Technologies.",
+        "login_error": "Authentication failed.",
+        "db_error": "System offline"
     }
 }
 
 def get_text(key):
     return UI_TEXT[st.session_state.language][key]
 
-# --- CSS مخصص (ديناميكي حسب الثيم) ---
+# --- CSS "Trillion Dollar" Design System ---
 def apply_custom_css():
-    # تحديد الألوان بناءً على الثيم المختار
     is_dark = st.session_state.theme == "Dark"
     
-    bg_color = "#121212" if is_dark else "#f8f9fa"
-    sidebar_bg = "#1E1E1E" if is_dark else "#ffffff"
-    text_color = "#E0E0E0" if is_dark else "#212529"
-    card_bg = "#2D2D2D" if is_dark else "#ffffff"
-    border_color = "#404040" if is_dark else "#e0e0e0"
-    user_msg_bg = "#3a3a3a" if is_dark else "#eef5fc"
-    bot_msg_bg = "#2D2D2D" if is_dark else "#ffffff"
-    input_bg = "#2D2D2D" if is_dark else "#ffffff"
+    # Palette: Ultra-Premium Monochrome with subtle accent
+    # Light: Clean white, off-white, dark grey text, absolute black headings
+    # Dark: Deep matte black, charcoal greys, white text
     
+    if is_dark:
+        bg_color = "#000000"
+        sec_bg_color = "#111111" # Sidebar
+        text_color = "#FFFFFF"
+        sub_text_color = "#888888"
+        accent_color = "#FFFFFF" # Minimalist accent
+        border_color = "#333333"
+        input_bg = "#1A1A1A"
+        card_bg = "#111111"
+        button_bg = "#FFFFFF"
+        button_text = "#000000"
+        shadow = "0 4px 20px rgba(0,0,0,0.5)"
+        user_msg_bg = "#1A1A1A"
+    else:
+        bg_color = "#FFFFFF"
+        sec_bg_color = "#FAFAFA" # Sidebar
+        text_color = "#111111"
+        sub_text_color = "#666666"
+        accent_color = "#000000"
+        border_color = "#EAEAEA"
+        input_bg = "#FFFFFF"
+        card_bg = "#FFFFFF"
+        button_bg = "#000000"
+        button_text = "#FFFFFF"
+        shadow = "0 10px 40px rgba(0,0,0,0.04)"
+        user_msg_bg = "#FAFAFA"
+
     st.markdown(f"""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap');
+        /* استيراد خطوط راقية */
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;700&family=Inter:wght@300;400;600&display=swap');
 
+        /* --- Global Reset & Typography --- */
         html, body, [class*="css"] {{
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Inter', 'Cairo', sans-serif;
             color: {text_color};
+            background-color: {bg_color};
+            -webkit-font-smoothing: antialiased;
         }}
 
+        /* إخفاء عناصر ستريم ليت الافتراضية */
+        #MainMenu {{visibility: hidden;}}
+        footer {{visibility: hidden;}}
+        header {{visibility: hidden;}}
+
+        /* --- Layout & Containers --- */
         .stApp {{
             background-color: {bg_color};
         }}
 
-        /* تخصيص القائمة الجانبية */
+        /* Sidebar - Ultra Clean */
         section[data-testid="stSidebar"] {{
-            background-color: {sidebar_bg};
+            background-color: {sec_bg_color};
             border-right: 1px solid {border_color};
+            padding-top: 2rem;
+        }}
+        section[data-testid="stSidebar"] h3 {{
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: {sub_text_color};
+            margin-bottom: 1rem;
+            font-weight: 600;
         }}
 
+        /* --- Buttons: The "Apple" Style --- */
         div.stButton > button {{
-            background-color: #0056b3;
-            color: white;
+            background-color: {button_bg};
+            color: {button_text};
+            border: 1px solid {button_bg};
             border-radius: 8px;
-            border: none;
-            padding: 0.5rem 2rem;
-            font-weight: 600;
-            font-size: 16px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             width: 100%;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: none;
         }}
         div.stButton > button:hover {{
-            background-color: #004494;
+            transform: scale(0.99);
+            opacity: 0.85;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }}
+        div.stButton > button:active {{
+            transform: scale(0.97);
         }}
 
-        /* تخصيص فقاعات المحادثة */
-        .stChatMessage {{
-            background-color: {bot_msg_bg};
-            border-radius: 15px;
-            margin-bottom: 15px;
-            border: 1px solid {border_color};
-        }}
-        
-        [data-testid="stChatMessage"][data-testid="user-message"] {{
-            background-color: {user_msg_bg};
-            border: none;
-        }}
-
-        /* حقل الإدخال */
-        .stChatInputContainer textarea {{
-            border-radius: 12px;
-            border: 1px solid {border_color};
+        /* --- Inputs: Minimalist --- */
+        .stTextInput input, .stSelectbox div[data-baseweb="select"] > div, .stChatInputContainer textarea {{
             background-color: {input_bg};
             color: {text_color};
+            border: 1px solid {border_color};
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 14px;
+            box-shadow: none;
+            transition: border-color 0.2s;
+        }}
+        .stChatInputContainer textarea:focus {{
+            border-color: {accent_color};
+            box-shadow: 0 0 0 1px {accent_color};
         }}
 
-        /* بطاقة الدخول */
+        /* --- Login Card: Central & Elegant --- */
+        .login-container {{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }}
         .login-card {{
             background-color: {card_bg};
-            padding: 3rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
-            margin-top: 2rem;
+            padding: 3rem 4rem;
+            border-radius: 24px;
             border: 1px solid {border_color};
+            box-shadow: {shadow};
+            text-align: center;
+            max-width: 450px;
+            margin: auto;
+        }}
+        .login-logo {{
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            background: linear-gradient(135deg, {text_color} 0%, {sub_text_color} 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }}
         .login-header {{
-            color: {text_color};
+            font-size: 1.75rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
+            color: {text_color};
+            letter-spacing: -0.5px;
         }}
         .login-sub {{
-            color: #888;
-            margin-bottom: 2rem;
+            font-size: 1rem;
+            color: {sub_text_color};
+            margin-bottom: 2.5rem;
+            line-height: 1.5;
+        }}
+
+        /* --- Chat Interface: Professional --- */
+        .stChatMessage {{
+            background-color: transparent;
+            border: none;
+            padding: 1rem 0;
+            gap: 1rem;
+        }}
+        [data-testid="stChatMessage"][data-testid="user-message"] {{
+            background-color: {user_msg_bg};
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            border: 1px solid {border_color};
+        }}
+        .stMarkdown p {{
+            font-size: 15px;
+            line-height: 1.6;
         }}
         
-        /* نصوص القوائم */
-        .stSelectbox label, .stRadio label {{
+        /* Status Container */
+        div[data-testid="stStatusWidget"] {{
+            background-color: {input_bg};
+            border: 1px solid {border_color};
+            border-radius: 8px;
+            color: {sub_text_color};
+        }}
+
+        /* Expander for History */
+        .streamlit-expanderHeader {{
+            background-color: transparent;
             color: {text_color};
+            font-size: 14px;
+            border: none;
         }}
         
-        #MainMenu {{visibility: hidden;}}
-        footer {{visibility: hidden;}}
+        /* Scrollbar */
+        ::-webkit-scrollbar {{
+            width: 6px;
+            height: 6px;
+        }}
+        ::-webkit-scrollbar-track {{
+            background: transparent;
+        }}
+        ::-webkit-scrollbar-thumb {{
+            background: {border_color};
+            border-radius: 3px;
+        }}
         </style>
     """, unsafe_allow_html=True)
 
@@ -282,10 +382,8 @@ class UserManager:
         except: return False
         
     def get_user_history(self, username):
-        """جلب سجل محادثات المستخدم من قاعدة البيانات"""
         if not db or not username or username == "Guest_User": return []
         try:
-            # جلب آخر 10 محادثات
             response = db.table("chat_history")\
                 .select("*")\
                 .eq("username", username)\
@@ -346,8 +444,8 @@ class ChatModel:
         if not self.api_key: return text
         try:
             prompt = f"""
-            You are a summarization engine. Summarize the provided text based on the query.
-            Constraint: Use ONLY provided text. Keep same language. Be concise.
+            You are an elite summarization engine. Summarize the provided text based strictly on the query.
+            Constraint: Use ONLY provided text. Keep same language. Be extremely concise and professional.
             User Query: {query}
             Source Text: {text}
             """
@@ -389,11 +487,8 @@ class ChatModel:
                     extract = data.get("extract")
                     if extract:
                         final_answer = self.smart_summarize(extract, query)
-                        source_suffix = " ⭐ (Verified Topic)" if is_priority_topic else ""
+                        source_suffix = " ⭐" if is_priority_topic else ""
                         return final_answer, f"Wikipedia ({target_title}){source_suffix}"
-                
-                if is_priority_topic:
-                    return "عذراً، هذا الموضوع موجود ضمن القائمة المعتمدة ولكن تعذر جلب المحتوى من ويكيبيديا حالياً.", "Wikipedia (Error)"
         except Exception: pass
         return None, None
 
@@ -454,34 +549,30 @@ def handle_google_login():
             st.error(get_text("login_error"))
 
 def login_page():
-    # إضافة خيار تغيير اللغة والثيم في صفحة الدخول أيضاً
+    # تصميم صفحة الدخول: مركزي، بسيط، راقي جداً
     with st.sidebar:
-        st.selectbox("Language / اللغة", ["AR", "EN", "TR"], key="lang_select_login", 
-                     index=["AR", "EN", "TR"].index(st.session_state.language),
-                     on_change=lambda: st.session_state.update({"language": st.session_state.lang_select_login}))
-        st.radio("Theme", ["Light", "Dark"], key="theme_select_login",
-                 index=["Light", "Dark"].index(st.session_state.theme),
-                 on_change=lambda: st.session_state.update({"theme": st.session_state.theme_select_login}))
+        # إخفاء عناصر الشريط الجانبي في صفحة الدخول لتركيز الانتباه
+        pass 
 
-    col1, col2, col3 = st.columns([1, 1.2, 1])
+    # استخدام حاوية مركزية عبر الأعمدة
+    _, col_center, _ = st.columns([1, 2, 1])
     
-    with col2:
+    with col_center:
+        st.markdown("<div class='login-container'>", unsafe_allow_html=True)
+        
         st.markdown(f"""
             <div class='login-card'>
-                <div style='font-size: 60px; margin-bottom: 10px;'>🏰</div>
+                <div class='login-logo'>🏰</div>
                 <h1 class='login-header'>{get_text("title")}</h1>
                 <p class='login-sub'>{get_text("subtitle")}</p>
-            </div>
         """, unsafe_allow_html=True)
-        
-        st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
         
         if not db:
             st.error(get_text("db_error"))
         
         handle_google_login()
         
-        st.markdown(f"<div style='text-align: center; margin: 15px 0; color: #999;'>{get_text('or')}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='font-size: 12px; color: #888; margin: 20px 0;'>{get_text('or')}</div>", unsafe_allow_html=True)
         
         if st.button(get_text("guest_login"), use_container_width=True):
              st.session_state.logged_in = True
@@ -489,22 +580,36 @@ def login_page():
              st.rerun()
              
         st.markdown(f"""
-            <div style='margin-top: 30px; font-size: 12px; color: #bbb; text-align: center;'>
+            <div style='margin-top: 40px; font-size: 11px; color: #aaa; letter-spacing: 0.5px;'>
                 {get_text('rights')}
             </div>
+            </div>
+        </div>
         """, unsafe_allow_html=True)
+        
+    # أدوات التحكم في الأسفل بشكل خفي
+    st.markdown("---")
+    c1, c2, c3 = st.columns([10, 1, 1])
+    with c2:
+        st.selectbox("Lang", ["AR", "EN", "TR"], key="lang_select_login", 
+                 index=["AR", "EN", "TR"].index(st.session_state.language),
+                 on_change=lambda: st.session_state.update({"language": st.session_state.lang_select_login}),
+                 label_visibility="collapsed")
+    with c3:
+        st.selectbox("Theme", ["Light", "Dark"], key="theme_select_login",
+                 index=["Light", "Dark"].index(st.session_state.theme),
+                 on_change=lambda: st.session_state.update({"theme": st.session_state.theme_select_login}),
+                 label_visibility="collapsed")
 
 def chat_interface():
-    # --- Sidebar ---
+    # --- Sidebar: Minimalist Navigation ---
     with st.sidebar:
-        st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=60)
+        st.markdown(f"<div style='font-size: 24px; font-weight: 700; margin-bottom: 20px;'>🏰 Akın Yurt</div>", unsafe_allow_html=True)
         
-        # قسم الإعدادات (لغة وثيم)
-        st.markdown(f"### {get_text('settings')}")
-        
+        st.markdown(f"<h3>{get_text('settings')}</h3>", unsafe_allow_html=True)
         col_l, col_t = st.columns(2)
         with col_l:
-            selected_lang = st.selectbox("Lang", ["AR", "EN", "TR"], 
+            selected_lang = st.selectbox("Language", ["AR", "EN", "TR"], 
                                        index=["AR", "EN", "TR"].index(st.session_state.language),
                                        label_visibility="collapsed")
             if selected_lang != st.session_state.language:
@@ -519,28 +624,23 @@ def chat_interface():
                 st.session_state.theme = selected_theme
                 st.rerun()
 
-        st.markdown("---")
+        st.markdown(f"<h3>{get_text('profile')}</h3>", unsafe_allow_html=True)
+        st.caption(st.session_state.username)
         
-        # قسم الملف الشخصي
-        st.markdown(f"### {get_text('profile')}")
-        st.write(f"👤 {st.session_state.username}")
-        
-        if st.button(get_text("clear_chat"), use_container_width=True):
+        if st.button(get_text("clear_chat")):
             st.session_state.messages = []
             st.rerun()
             
-        if st.button(get_text("logout"), key="logout_btn", use_container_width=True):
+        if st.button(get_text("logout"), key="logout_btn"):
             st.session_state.logged_in = False
             st.session_state.username = ""
             st.session_state.messages = []
             st.rerun()
         
-        # قسم سجل المحادثات
+        # History
         if st.session_state.username != "Guest_User":
-            st.markdown("---")
-            st.markdown(f"### {get_text('history_title')}")
+            st.markdown(f"<div style='margin-top: 30px;'><h3>{get_text('history_title')}</h3></div>", unsafe_allow_html=True)
             
-            # جلب السجل مرة واحدة عند التحميل لتجنب البطء
             if not st.session_state.history_loaded:
                  st.session_state.history_loaded = auth_manager.get_user_history(st.session_state.username)
             
@@ -548,48 +648,33 @@ def chat_interface():
             
             if history_data:
                 for item in history_data:
-                    # قص السؤال الطويل
-                    q_short = (item['question'][:30] + '..') if len(item['question']) > 30 else item['question']
-                    with st.expander(f"📅 {item.get('created_at', '')[:10]} - {q_short}"):
-                        st.write(f"**Q:** {item['question']}")
-                        st.write(f"**A:** {item['answer']}")
-                        st.caption(f"{get_text('source')}: {item['source']}")
-            else:
-                st.caption("No history available.")
+                    q_short = (item['question'][:25] + '..') if len(item['question']) > 25 else item['question']
+                    with st.expander(f"{q_short}"):
+                        st.write(item['answer'])
             
-            if st.button("🔄 Refresh History", key="refresh_hist"):
+            if st.button("↻", key="refresh_hist"):
                 st.session_state.history_loaded = auth_manager.get_user_history(st.session_state.username)
                 st.rerun()
 
-        st.markdown("---")
-        st.markdown("""
-            <div style='font-size: 12px; color: #888;'>
-                Connected to <b>Supabase</b> 🟢<br>
-                Powered by <b>Gemini 2.0</b> ⚡
-            </div>
-        """, unsafe_allow_html=True)
-
-    # --- Main Chat Area ---
-    col_main, _ = st.columns([8, 1])
+    # --- Main Chat Area: Clean & Spacious ---
     
-    with col_main:
-        st.markdown(f"""
-            <h2 style='color: #0056b3; font-weight: 700;'>{get_text('welcome_chat')}</h2>
-            <p style='color: #666;'>{get_text('desc_chat')}</p>
-        """, unsafe_allow_html=True)
+    # Header area (Clean text only)
+    st.markdown(f"""
+        <div style='margin-bottom: 3rem;'>
+            <h1 style='font-size: 2.5rem; font-weight: 700; letter-spacing: -1px;'>{get_text('welcome_chat')}</h1>
+            <p style='font-size: 1.1rem; color: #888; font-weight: 300;'>{get_text('desc_chat')}</p>
+        </div>
+    """, unsafe_allow_html=True)
 
     model = ChatModel()
     chat_container = st.container()
     
     with chat_container:
-        if not st.session_state.messages:
-            pass
-            
         for m in st.session_state.messages:
             with st.chat_message(m["role"]):
                 st.markdown(m["content"])
                 if "source" in m:
-                    st.markdown(f"<div style='font-size: 11px; color: #888; margin-top: 5px;'>{get_text('source')}: {m['source']}</div>", unsafe_allow_html=True)
+                    st.caption(f"{get_text('source')}: {m['source']}")
 
     if q := st.chat_input(get_text("input_placeholder")):
         st.session_state.messages.append({"role": "user", "content": q})
@@ -600,16 +685,14 @@ def chat_interface():
         ans, src = "", ""
         lang_query = model.guess_lang(q)
 
-        with st.status(get_text("status_memory").replace("...", ""), expanded=True) as status:
+        # Status: Minimalist & fast
+        with st.status(get_text("status_memory"), expanded=True) as status:
             
-            # 1. Memory Check
-            status.write(get_text("status_memory"))
             db_ans = model.search_db_history(q)
             if db_ans:
-                ans, src = db_ans, "Cloud Memory (Supabase)"
+                ans, src = db_ans, "Cloud Memory"
                 status.update(label=get_text("status_found_mem"), state="complete", expanded=False)
             
-            # 2. Wikipedia Search + Smart Summarization
             if not ans:
                 status.write(get_text("status_wiki"))
                 wiki_ans, topic = model.search_wikipedia(model.normalize_text(q), lang_query)
@@ -617,23 +700,17 @@ def chat_interface():
                     ans, src = wiki_ans, topic
                     status.update(label=get_text("status_found_wiki"), state="complete", expanded=False)
             
-            # 3. Gemini AI
             if not ans:
                 gemini_resp = model.ask_gemini(q)
-                ans, src = gemini_resp, "Gemini AI"
+                ans, src = gemini_resp, "AI Model"
                 status.update(label=get_text("status_ai"), state="complete", expanded=False)
 
         if ans and "Error" not in ans and st.session_state.username != "Guest_User":
             model.save_interaction(st.session_state.username, q, ans, src)
-            # تحديث السجل محلياً لإظهار المحادثة الجديدة فوراً في القائمة الجانبية عند الضغط على تحديث
             st.session_state.history_loaded = [] 
 
         st.session_state.messages.append({"role": "assistant", "content": ans, "source": src})
-        
-        with chat_container:
-            with st.chat_message("assistant"):
-                st.markdown(ans)
-                st.markdown(f"<div style='font-size: 11px; color: #0056b3; margin-top: 5px;'>{get_text('source')}: {src}</div>", unsafe_allow_html=True)
+        st.rerun()
 
 if __name__ == "__main__":
     if st.session_state.logged_in:
