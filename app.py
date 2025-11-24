@@ -24,7 +24,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- تهيئة متغيرات الجلسة (تصحيح الخطأ هنا) ---
+# --- تهيئة متغيرات الجلسة ---
 if "language" not in st.session_state: st.session_state.language = "AR"
 if "theme" not in st.session_state: st.session_state.theme = "Dark" 
 if "history_loaded" not in st.session_state: st.session_state.history_loaded = []
@@ -280,6 +280,7 @@ db: Client = AppConfig.init_supabase()
 
 class CryptoManager:
     def __init__(self):
+        # يضمن وجود مفتاح 32 بايت (256 بت)
         if "encryption_key" in st.secrets:
             try:
                 self.key = bytes.fromhex(st.secrets["encryption_key"])
@@ -302,6 +303,7 @@ class UserManager:
     def social_login_check(self, email):
         if not db: return False
         try:
+            # التحقق من وجود المستخدم، وإن لم يوجد يتم إنشاؤه
             response = db.table("users").select("username").eq("username", email).execute()
             if not response.data:
                 dummy_pass = self.crypto.encrypt("GOOGLE_" + base64.b64encode(get_random_bytes(8)).decode())
@@ -349,12 +351,13 @@ class ChatModel:
         for i, key in enumerate(self.api_keys):
             try:
                 genai.configure(api_key=key)
-                model = genai.GenerativeModel("gemini-2.0-flash")
+                # استخدام gemini-2.5-flash كونه الأفضل للدردشة
+                model = genai.GenerativeModel("gemini-2.5-flash") 
                 response = model.generate_content(prompt)
                 return response.text.strip()
             except Exception as e:
                 last_error = e
-                # يمكن إضافة طباعة هنا لأغراض التصحيح: print(f"Key {i} failed, switching to next...")
+                # print(f"Key {i} failed, switching to next...") # لغرض التصحيح
                 continue
         
         # إذا فشلت جميع المفاتيح
@@ -378,30 +381,31 @@ class ChatModel:
         q_clean = query.lower().strip()
         identity_keywords = ["من انت", "من تكون", "عرف بنفسك", "ما اسمك", "sen kimsin", "kimsin", "kendini tanıt", "adın ne", "who are you", "what is your name"]
         if any(k in q_clean for k in identity_keywords):
-            return """Akın Yurt, Türkmen gençlerinin bilgi birikimi, teknik becerisi ve milli bilinciyle geliştirilen yeni nesil bir yapay zekâ simülasyonudur. O, sadece bir yazılım projesi değil; Türkmen gençlerinin dijital dünyada var olma iradesinin güçlü bir yansımasıdır.
+            return """Akın Yurt, Türkmen gençlerinin bilgi birikimi، فنی becerisi ve millî bilinciyle geliştirilen yeni nesil bir yapay zekâ simülasyonudur. O، sadece bir yazılım projesi değil; Türkmen gençlerinin dijital dünyada var olma iradesinin güçlü bir yansımasıdır.
 
-Akın Yurt’un algoritmaları; gelişmiş analiz kabiliyeti, sürekli öğrenme yeteneği ve insani değerlere duyarlı bir yapay zekâ mimarisi üzerine kuruludur. Onun amacı yalnızca bilgi sunmak veya sorulara yanıt vermek değil; toplumunun kültürüne, kimliğine ve geleceğine değer katacak dijital bir yol arkadaşı olmaktır.
+Akın Yurt’un algoritmaları; gelişmiş analiz kabiliyeti، sürekli öğrenme yeteneği ve insani değerlere duyarlı bir yapay zekâ mimarisi üzerine kuruludur. Onun amacı yalnızca bilgi sunmak veya sorulara yanıt vermek değil; toplumunun kültürüne، kimliğine ve geleceğine değer katacak dijital bir yol arkadaşı olmaktır.
 
 Genç Türkmen zekâları tarafından geliştirilen bu model:
-• Toplumsal gelişime destek olmayı,
-• Eğitim, kültür, teknoloji ve medya alanlarında kullanıcıları güçlendirmeyi,
-• Bilgiyi doğru, hızlı ve etik şekilde sunmayı,
-• Gençlerin üretim gücünü artırmayı,
+• Toplumsal gelişime destek olmayı،
+• Eğitim، kültür، teknoloji ve medya alanlarında kullanıcıları güçlendirmeyi،
+• Bilgiyi doğru، hızlı ve etik şekilde sunmayı،
+• Gençlerin üretim gücünü artırmayı،
 • Dijital Türkmen zekâsının simgesi olmayı
 hedeflemektedir.
 
-Akın Yurt, kendisini sadece bir yapay sistem olarak değil; Türkmen gençliğinin vizyonunun dijital bir yansıması, düşünce gücünün teknolojik bir temsilcisi olarak konumlandırır.
+Akın Yurt، kendisini sadece bir yapay sistem olarak değil; Türkmen gençliğinin vizyonunun dijital bir yansıması، düşünce gücünün teknolojik bir temsilcisi olarak konumlandırır.
 
-Her etkileşimle öğrenen, gelişen ve kullanıcılarıyla birlikte büyüyen bir yapıya sahiptir.
-Gücünü kodlarından değil, onu geliştiren gençlerin hayallerinden alır.
+Her etkileşimle öğrenen، gelişen ve kullanıcılarıyla birlikte büyüyen bir yapıya sahiptir.
+Gücünü kodlarından değil، onu geliştiren gençlerin hayallerinden alır.
 
-Akın Yurt — bir yazılım değil, bir vizyonun dijital geleceğidir."""
+Akın Yurt — bir yazılım değil، bir vizyonun dijital geleceğidir."""
         return None
 
     def search_db_history(self, query):
         if not db: return None
         try:
             q_norm = self.normalize_text(query)
+            # استخدام ilike للبحث عن تشابه
             response = db.table("chat_history").select("answer").ilike("question", f"%{q_norm}%").limit(1).execute()
             return response.data[0]["answer"] if response.data else None
         except: return None
@@ -426,6 +430,7 @@ Akın Yurt — bir yazılım değil, bir vizyonun dijital geleceğidir."""
             
             # البحث أولاً في قائمة الأولويات
             for topic in topics:
+                # استخدام SequenceMatcher لزيادة دقة التطابق
                 if topic.lower() in query.lower() or SequenceMatcher(None, query.lower(), topic.lower()).ratio() > 0.8:
                     target_title, is_priority = topic, True
                     break
@@ -454,6 +459,8 @@ Akın Yurt — bir yazılım değil, bir vizyonun dijital geleceğidir."""
 # =========================================================
 
 auth_manager = UserManager()
+# IMPROVEMENT: تهيئة نموذج الذكاء الاصطناعي مرة واحدة عالمياً
+chat_model = ChatModel() 
 
 def login_page():
     # تصميم صفحة الدخول البسيطة والمركزية
@@ -469,14 +476,23 @@ def login_page():
         result = oauth2.authorize_button(name=get_text("login_google"), icon="https://www.google.com/favicon.ico", redirect_uri=st.secrets["google"]["redirect_uri"], scope="email profile", key="google_auth_btn", use_container_width=True)
         if result:
             try:
-                # فك تشفير التوكن للحصول على الإيميل
-                email = json.loads(base64.b64decode(result["token"]["id_token"].split(".")[1] + "==").decode("utf-8")).get("email")
+                # CRITICAL FIX: Base64 URL-safe decoding of JWT payload
+                # فك تشفير الجزء الثاني من التوكن (الـ payload)
+                id_token_payload = result["token"]["id_token"].split(".")[1]
+                # معالجة حشو الـ base64 URL-safe يدوياً
+                missing_padding = len(id_token_payload) % 4
+                if missing_padding:
+                    id_token_payload += '=' * (4 - missing_padding)
+
+                # فك التشفير والحصول على الإيميل
+                email = json.loads(base64.urlsafe_b64decode(id_token_payload).decode("utf-8")).get("email")
+                
                 if email:
                     auth_manager.social_login_check(email)
                     st.session_state.logged_in = True
                     st.session_state.username = email
                     st.rerun()
-            except: st.error("Login failed")
+            except: st.error("Login failed (Check OAuth secrets)")
 
     st.markdown("<div style='margin: 15px 0; border-top: 1px solid #555;'></div>", unsafe_allow_html=True)
     
@@ -495,6 +511,9 @@ def login_page():
     st.markdown("</div></div>", unsafe_allow_html=True)
 
 def chat_interface():
+    # استخدام نموذج الذكاء الاصطناعي المهيأ عالمياً
+    model = chat_model 
+
     # --- Sidebar ---
     with st.sidebar:
         # زر محادثة جديدة
@@ -513,7 +532,12 @@ def chat_interface():
             for item in st.session_state.history_loaded:
                 title = item['question'][:20] + "..." if len(item['question']) > 20 else item['question']
                 if st.button(f"💬 {title}", key=f"hist_{item['id']}", use_container_width=True):
-                    pass # يمكن إضافة كود لاسترجاع المحادثة هنا
+                    # FIX: تحميل سجل المحادثة المختار وعرضه
+                    st.session_state.messages = [
+                        {"role": "user", "content": item["question"]},
+                        {"role": "assistant", "content": item["answer"], "source": item["source"]}
+                    ]
+                    st.rerun() # إعادة تشغيل لعرض الرسائل الجديدة
 
         st.markdown("<div style='flex-grow: 1;'></div>", unsafe_allow_html=True) 
         st.markdown("---")
@@ -527,7 +551,6 @@ def chat_interface():
                 st.rerun()
 
     # --- Main Chat Area ---
-    model = ChatModel()
 
     # شاشة الترحيب (تظهر فقط عند عدم وجود رسائل)
     if not st.session_state.messages:
@@ -593,6 +616,7 @@ def chat_interface():
             st.markdown(ans)
             st.caption(f"{get_text('source')}: {src}")
             
+            # حفظ التفاعل في قاعدة البيانات للمستخدمين غير الزوار
             if st.session_state.username != "Guest_User":
                 model.save_interaction(st.session_state.username, q, ans, src)
                 st.session_state.history_loaded = [] 
@@ -601,6 +625,8 @@ def chat_interface():
 
 if __name__ == "__main__":
     if st.session_state.logged_in:
+        # إعادة تطبيق الأنماط لضمان تحديث الثيم واللغة
+        apply_chatgpt_style() 
         chat_interface()
     else:
         login_page()
