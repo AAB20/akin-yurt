@@ -24,10 +24,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# تهيئة متغيرات الجلسة
+# --- تهيئة متغيرات الجلسة (تصحيح الخطأ هنا) ---
 if "language" not in st.session_state: st.session_state.language = "AR"
-if "theme" not in st.session_state: st.session_state.theme = "Dark" # الوضع الافتراضي داكن مثل ChatGPT
+if "theme" not in st.session_state: st.session_state.theme = "Dark" 
 if "history_loaded" not in st.session_state: st.session_state.history_loaded = []
+if "logged_in" not in st.session_state: st.session_state.logged_in = False
+if "username" not in st.session_state: st.session_state.username = ""
+if "messages" not in st.session_state: st.session_state.messages = []
 
 # =========================================================
 # 2. الترجمة والنصوص (LOCALIZATION)
