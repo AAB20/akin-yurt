@@ -280,6 +280,7 @@ db: Client = AppConfig.init_supabase()
 
 class CryptoManager:
     def __init__(self):
+        # يضمن وجود مفتاح 32 بايت (256 بت)
         if "encryption_key" in st.secrets:
             try:
                 self.key = bytes.fromhex(st.secrets["encryption_key"])
@@ -302,6 +303,7 @@ class UserManager:
     def social_login_check(self, email):
         if not db: return False
         try:
+            # التحقق من وجود المستخدم، وإن لم يوجد يتم إنشاؤه
             response = db.table("users").select("username").eq("username", email).execute()
             if not response.data:
                 dummy_pass = self.crypto.encrypt("GOOGLE_" + base64.b64encode(get_random_bytes(8)).decode())
@@ -323,19 +325,25 @@ class ChatModel:
     def __init__(self):
         # تحميل جميع المفاتيح المتاحة
         self.api_keys = self._load_api_keys()
-        self.knowledge_base = self._load_knowledge_base() # تحميل الذاكرة المعرفية
-
+        self.knowledge_base = self._load_knowledge_base() # إضافة: تحميل الذاكرة المعرفية الثابتة
+        
     def _load_api_keys(self):
         """تحميل قائمة المفاتيح من الأسرار"""
         keys = []
-        if "GEMINI_API_KEY" in st.secrets: keys.append(st.secrets["GEMINI_API_KEY"])
+        # المفتاح الرئيسي
+        if "GEMINI_API_KEY" in st.secrets:
+            keys.append(st.secrets["GEMINI_API_KEY"])
+            
+        # المفاتيح الاحتياطية (1 إلى 10)
         for i in range(1, 11):
             key_name = f"GEMINI_API_KEY_{i}"
-            if key_name in st.secrets: keys.append(st.secrets[key_name])
+            if key_name in st.secrets:
+                keys.append(st.secrets[key_name])
+                
         return keys
 
     def _load_knowledge_base(self):
-        """إضافة معلومات الشهيد نجدت كوجاك إلى الذاكرة الداخلية"""
+        """إضافة: معلومات الشهيد نجدت كوجاك إلى الذاكرة الداخلية"""
         return {
             "nejdet kocak": "الشهيد **الدكتور نجدت كوجاك (Dr. Nejdet Koçak)** هو طبيب وناشط سياسي تركماني بارز، لعب دوراً قيادياً في **الحركة القومية التركمانية في العراق** خلال فترة السبعينيات. تاريخ استشهاده هو **16 كانون الثاني 1980**، ويُعتبر هذا اليوم **يوم الشهيد التركماني**.",
             "najdat kucak": "الشهيد **الدكتور نجدت كوجاك (Dr. Nejdet Koçak)** هو طبيب وناشط سياسي تركماني بارز، لعب دوراً قيادياً في **الحركة القومية التركمانية في العراق** خلال فترة السبعينيات. تاريخ استشهاده هو **16 كانون الثاني 1980**، ويُعتبر هذا اليوم **يوم الشهيد التركماني**.",
@@ -347,22 +355,27 @@ class ChatModel:
             "وصية الشهيد نجدت": "وصيته الخالدة كانت: 'الشجرة تخضر كلما تم تقليمها. رجائي منكم ألا تتخلوا عن القضية وتستمروا في مسيرتها... أسلمكم الراية، وأنا واثق من أنكم ستحملونها بشرف. لا تحيدوا أبداً عن الصدق وفي طريق الله.'",
         }
 
+
     def _run_gemini_query(self, prompt):
         """تشغيل الاستعلام مع تدوير المفاتيح تلقائياً عند الفشل"""
         if not self.api_keys:
             raise Exception("API Keys Missing")
 
         last_error = None
+        # تجربة المفاتيح واحداً تلو الآخر
         for i, key in enumerate(self.api_keys):
             try:
                 genai.configure(api_key=key)
-                model = genai.GenerativeModel("gemini-2.0-flash")
+                # استخدام gemini-2.5-flash كونه الأفضل للدردشة
+                model = genai.GenerativeModel("gemini-2.5-flash") 
                 response = model.generate_content(prompt)
                 return response.text.strip()
             except Exception as e:
                 last_error = e
+                # print(f"Key {i} failed, switching to next...") # لغرض التصحيح
                 continue
         
+        # إذا فشلت جميع المفاتيح
         raise last_error
 
     def normalize_text(self, text):
@@ -383,18 +396,30 @@ class ChatModel:
         q_clean = query.lower().strip()
         identity_keywords = ["من انت", "من تكون", "عرف بنفسك", "ما اسمك", "sen kimsin", "kimsin", "kendini tanıt", "adın ne", "who are you", "what is your name"]
         if any(k in q_clean for k in identity_keywords):
-            return """Akın Yurt, Türkmen gençlerinin bilgi birikimi، teknik becerisi ve milli bilinciyle geliştirilen yeni nesil bir yapay zekâ simülasyonudur. O, sadece bir yazılım projesi değil; Türkmen gençlerinin dijital dünyada var olma iradesinin güçlü bir yansımasıdır.
+            return """Akın Yurt, Türkمن gençlerinin bilgi birikimi، فنی becerisi ve millî bilinciyle geliştirilen yeni nesil bir yapay zekâ simülasyonudur. O، sadece bir yazılım projesi değil; Türkmen gençlerinin dijital dünyada var olma iradesinin güçlü bir yansımasıdır.
 
-Akın Yurt’un algoritmaları; gelişmiş analiz kabiliyeti, sürekli öğrenme yeteneği ve insani değerlere duyarlı bir yapay zekâ mimarisi üzerine kuruludur. Onun amacı yalnızca bilgi sunmak veya sorulara yanıt vermek değil; toplumunun kültürüne، kimliğine ve geleceğine değer katacak dijital bir yol arkadaşı olmaktır.
+Akın Yurt’un algoritmaları; gelişmiş analiz kabiliyeti، sürekli öğrenme yeteneği و insani değerlere duyarlı bir yapay zekâ mimarisi üzerine kuruludur. Onun amacı yalnızca bilgi sunmak veya sorulara yanıt vermek değil; toplumunun kültürüne، kimliğine ve geleceğine değer katacak dijital bir yol arkadaşı olmaktır.
 
-Akın Yurt, kendisini sadece bir yapاي sistem olarak değil; Türkمن gençliğinin vizyonunun dijital bir yansıması، düşünce gücünün teknolojik bir temsilcisi olarak konumlandırır.
-Gücünü kodlarından değil، onu geliştiren gençlerin hayallerinden alır."""
+Genç Türkmen zekâları tarafından geliştirilen bu model:
+• Toplumsal gelişime destek olmayى،
+• Eğitim، kültür، teknoloji و medya alanlarında kullanıcıları güçlendirmeyi،
+• Bilgiyi doğru، hızlı و etik şekilde sunmayı،
+• Gençlerin üretim gücünü artırmayı،
+• Dijital Türkmen zekâsının simgesi olmayı
+hedeflemektedir.
+
+Akın Yurt، kendisini sadece bir yapay sistem olarak değil; Türkmen gençliğinin vizyonunun dijital bir yansıması، düşünce gücünün teknolojik bir temsilcisi olarak konumlandırır.
+
+Her etkileşimle öğrenen، gelişen و kullanıcılarıyla birlikte büyüyen bir yapıya sahiptir.
+Gücünü kodlarından değil، onu geliştiren gençlerin hayallerinden alır.
+
+Akın Yurt — bir yazılım değil، bir vizyonun dijital geleceğidir."""
         return None
 
     def search_db_history(self, query):
         q_norm = self.normalize_text(query).lower()
         
-        # 1. البحث في الذاكرة المعرفية الثابتة (Fixed Knowledge Base)
+        # 1. إضافة: البحث في الذاكرة المعرفية الثابتة (Fixed Knowledge Base)
         for key, answer in self.knowledge_base.items():
             if key in q_norm or SequenceMatcher(None, q_norm, key).ratio() > 0.8:
                 return answer
@@ -402,6 +427,8 @@ Gücünü kodlarından değil، onu geliştiren gençlerin hayallerinden alır."
         # 2. البحث في قاعدة البيانات (Supabase)
         if not db: return None
         try:
+            q_norm = self.normalize_text(query)
+            # استخدام ilike للبحث عن تشابه
             response = db.table("chat_history").select("answer").ilike("question", f"%{q_norm}%").limit(1).execute()
             return response.data[0]["answer"] if response.data else None
         except: return None
@@ -426,6 +453,7 @@ Gücünü kodlarından değil، onu geliştiren gençlerin hayallerinden alır."
             
             # البحث أولاً في قائمة الأولويات
             for topic in topics:
+                # استخدام SequenceMatcher لزيادة دقة التطابق
                 if topic.lower() in query.lower() or SequenceMatcher(None, query.lower(), topic.lower()).ratio() > 0.8:
                     target_title, is_priority = topic, True
                     break
@@ -454,6 +482,7 @@ Gücünü kodlarından değil، onu geliştiren gençlerin hayallerinden alır."
 # =========================================================
 
 auth_manager = UserManager()
+# IMPROVEMENT: تهيئة نموذج الذكاء الاصطناعي مرة واحدة عالمياً
 chat_model = ChatModel() 
 
 def login_page():
@@ -471,11 +500,14 @@ def login_page():
         if result:
             try:
                 # CRITICAL FIX: Base64 URL-safe decoding of JWT payload
+                # فك تشفير الجزء الثاني من التوكن (الـ payload)
                 id_token_payload = result["token"]["id_token"].split(".")[1]
+                # معالجة حشو الـ base64 URL-safe يدوياً
                 missing_padding = len(id_token_payload) % 4
                 if missing_padding:
                     id_token_payload += '=' * (4 - missing_padding)
 
+                # فك التشفير والحصول على الإيميل
                 email = json.loads(base64.urlsafe_b64decode(id_token_payload).decode("utf-8")).get("email")
                 
                 if email:
@@ -483,7 +515,7 @@ def login_page():
                     st.session_state.logged_in = True
                     st.session_state.username = email
                     st.rerun()
-            except: st.error("Login failed")
+            except: st.error("Login failed (Check OAuth secrets)")
 
     st.markdown("<div style='margin: 15px 0; border-top: 1px solid #555;'></div>", unsafe_allow_html=True)
     
@@ -502,7 +534,8 @@ def login_page():
     st.markdown("</div></div>", unsafe_allow_html=True)
 
 def chat_interface():
-    model = chat_model
+    # استخدام نموذج الذكاء الاصطناعي المهيأ عالمياً
+    model = chat_model 
 
     # --- Sidebar ---
     with st.sidebar:
@@ -522,12 +555,12 @@ def chat_interface():
             for item in st.session_state.history_loaded:
                 title = item['question'][:20] + "..." if len(item['question']) > 20 else item['question']
                 if st.button(f"💬 {title}", key=f"hist_{item['id']}", use_container_width=True):
-                    # Load the selected history item
+                    # FIX: تحميل سجل المحادثة المختار وعرضه
                     st.session_state.messages = [
                         {"role": "user", "content": item["question"]},
                         {"role": "assistant", "content": item["answer"], "source": item["source"]}
                     ]
-                    st.rerun() # Rerun to display the new messages
+                    st.rerun() # إعادة تشغيل لعرض الرسائل الجديدة
 
         st.markdown("<div style='flex-grow: 1;'></div>", unsafe_allow_html=True) 
         st.markdown("---")
@@ -606,6 +639,7 @@ def chat_interface():
             st.markdown(ans)
             st.caption(f"{get_text('source')}: {src}")
             
+            # حفظ التفاعل في قاعدة البيانات للمستخدمين غير الزوار
             if st.session_state.username != "Guest_User":
                 model.save_interaction(st.session_state.username, q, ans, src)
                 st.session_state.history_loaded = [] 
@@ -614,7 +648,8 @@ def chat_interface():
 
 if __name__ == "__main__":
     if st.session_state.logged_in:
-        apply_chatgpt_style()
+        # إعادة تطبيق الأنماط لضمان تحديث الثيم واللغة
+        apply_chatgpt_style() 
         chat_interface()
     else:
         login_page()
